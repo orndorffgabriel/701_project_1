@@ -17,47 +17,49 @@ class MainWindow(PyQt5.QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow,self).__init__()
 
-        # Define menus (e.g., File and Help)
+        # Define menus
         #   defintes file menu
         self.menuFile = self.menuBar().addMenu("&Help")
-        self.actionHelp = PyQt5.QtWidgets.QAction("&EasterEgg", self)
+        self.actionHelp = PyQt5.QtWidgets.QAction("&YouCanHelp", self)
         self.actionHelp.triggered.connect(self.Help)
         self.menuFile.addActions([self.actionHelp])
         
         # Define and set main widgets
         widget = PyQt5.QtWidgets.QWidget()
-        self.value = PyQt5.QtWidgets.QLineEdit("Enter Number")
-        items=["% Overshoot","Settling Time"]
-        self.drop = PyQt5.QtWidgets.QComboBox()
-        self.drop.addItems(items)
+        self.overShoot = PyQt5.QtWidgets.QLineEdit("% Overshoot")
+        self.settlingTime = PyQt5.QtWidgets.QLineEdit("Settling Time")
         self.output = PyQt5.QtWidgets.QLineEdit("Output")
-        self.optbutton = PyQt5.QtWidgets.QPushButton("Optimize",self)
-        self.optbutton.clicked.connect(self.optEvent)
+        self.optbutton = PyQt5.QtWidgets.QPushButton("Find K",self)
+        self.optbutton.clicked.connect(self.buttonEvent)
 
         widget.setFixedSize(400,225)
         layout = PyQt5.QtWidgets.QVBoxLayout()
-        layout.addWidget(self.value)
-        layout.addWidget(self.drop)  
-        layout.addWidget(self.output)
+        layout.addWidget(self.overShoot)
+        layout.addWidget(self.settlingTime)
         layout.addWidget(self.optbutton)
+        layout.addWidget(self.output)
         widget.setLayout(layout)  
         self.setCentralWidget(widget)
-        
+    
+    #message displayed by Help    
     def Help(self):
-        self.output.setText("Michelle Le says Gabe sucks")
+        self.output.setText("You can help by giving us 100%")
         
-    def optEvent(self):
-        self.output.setText(str("It works"))
-        item = str(self.drop.itemText(self.drop.currentIndex()))
-        if item=="% Overshoot":
-            #Ts = OS(float(self.value.text()))
-            Ts = "Ts optimized" #to be removed once OS is callable
-            self.output.setText(str(Ts))
-        else:
-            #Os = TS(float(self.value.text()))
-            Os = "Os optimized" # to be removed once TS is callable
-            self.output.setText(str(Os))
+    #When button is pushed call for_the_gui() to get kVals and return to self.output
+    def buttonEvent(self):
+        #ensures that the inputs are floats or ints
+        try:
+            os=float(self.overShoot.text())
+            ts=float(self.settlingTime.text())
+            kVals = for_the_gui(os,ts)
+            self.output.setText(str(kVals))
+        except (ValueError):
+            self.output.setText("Overshoot and Settling Time must be floats or ints")
         
+def for_the_gui(a,b):
+    return ([a,b,0.7734])
+
+#runs the gui
 app = PyQt5.QtWidgets.QApplication(sys.argv)
 widget = MainWindow()
 widget.show()
