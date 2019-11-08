@@ -47,7 +47,7 @@ def for_the_gui(Mp,ts):
     
     """The scipy function that creates
     controller gains for the system"""
-    k = signal.place_poles(A,B,poles).gain_matrix
+    k = signal.place_poles(A,B,poles).gain_matrix[0]
     return k                            
 
 class MainWindow(PyQt5.QtWidgets.QMainWindow):
