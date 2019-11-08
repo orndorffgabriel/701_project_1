@@ -5,6 +5,7 @@
 import unittest
 import scipy as sp
 import optomize
+from scipy import signal
 
 class Testing_foos(unittest.TestCase):
     '''
@@ -42,7 +43,7 @@ class Testing_poles(unittest.TestCase):
     should be outputted to the GUI
     '''
     
-    def test_K(self):
+    def test_K_gains(self):
         '''
         Check the gain matrix
         '''
@@ -51,8 +52,19 @@ class Testing_poles(unittest.TestCase):
         os = 30
         ts = 3
         
-        #Actual value (calculated in MATLAB)
-        test_K = sp.array([9.57690, 0.6667])
+        #Actual value
+        zeta = (-sp.log(os/100))/sp.sqrt(sp.pi**2+sp.log(os/100)**2)
+        wn = 4/(ts*zeta)
+        
+        P= sp.array([-zeta*wn+1j*wn*sp.sqrt(1-zeta**2), -zeta*wn-1j*wn*sp.sqrt(1-zeta**2)])
+        
+        A = sp.array([[0, 1],
+                    [0, -2]])            
+        B = sp.array([[0],             
+                      [1]])  
+        test_K = signal.place_poles(A,B,P).gain_matrix[0]
+        
+        #Getting output from file
         K = optomize.for_the_gui(os,ts)
         
         print(test_K, K)
