@@ -4,7 +4,7 @@
 #Import Statements
 import unittest
 import scipy as sp
-import optomize
+import optomization
 from scipy import signal
 
 class Testing_foos(unittest.TestCase):
@@ -29,7 +29,7 @@ class Testing_foos(unittest.TestCase):
         test_wn = 4/(ts*test_z)
         
         #Getting output from the file
-        z,wn = optomize.sys_vals(os,ts)
+        z,wn = optomization.sys_vals(os,ts)
         
         #Comparing the test to the actual
         print(test_z, z, test_wn, wn)
@@ -65,9 +65,11 @@ class Testing_poles(unittest.TestCase):
         test_K = signal.place_poles(A,B,P).gain_matrix[0]
         
         #Getting output from file
-        K = optomize.for_the_gui(os,ts)
+        K = optomization.for_the_gui(os,ts)
         
         print(test_K, K)
-        self.assertAlmostEqual(K,test_K, places = 14)
+        for i in range(len(test_K)):
+            self.assertAlmostEqual(K[i],test_K[i], places = 14)
     
-    pass
+if __name__ == '__main__':
+    unittest.main()
